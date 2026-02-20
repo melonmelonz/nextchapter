@@ -23,6 +23,108 @@ const QUESTIONS = [
     answers: ["12", "16", "20", "24"], correct: 2 }
 ];
 
-document.getElementById("start-btn").addEventListener("click", () => {
-  alert("todo: quiz logic");
-});
+let currentIndex = 0, score = 0, userAnswers = [], hasAnswered = false;
+
+const startScreen   = document.getElementById("start-screen");
+const quizScreen    = document.getElementById("quiz-screen");
+const resultsScreen = document.getElementById("results-screen");
+const reviewScreen  = document.getElementById("review-screen");
+const startBtn   = document.getElementById("start-btn");
+const nextBtn    = document.getElementById("next-btn");
+const restartBtn = document.getElementById("restart-btn");
+const reviewBtn  = document.getElementById("review-btn");
+const backBtn    = document.getElementById("back-btn");
+const questionEl   = document.getElementById("question-text");
+const counterEl    = document.getElementById("question-counter");
+const progressFill = document.getElementById("progress-fill");
+const answersEl    = document.getElementById("answers-container");
+const scoreTracker = document.getElementById("score-tracker");
+const finalScoreEl = document.getElementById("final-score");
+const percentEl    = document.getElementById("score-percent");
+const messageEl    = document.getElementById("score-message");
+const resultIconEl = document.getElementById("result-icon");
+const reviewListEl = document.getElementById("review-list");
+
+function showScreen(s) {
+  [startScreen, quizScreen, resultsScreen, reviewScreen].forEach(x => x.classList.remove("active"));
+  s.classList.add("active");
+}
+
+function startQuiz() {
+  currentIndex = 0; score = 0; userAnswers = []; hasAnswered = false;
+  scoreTracker.textContent = "Score: 0";
+  showScreen(quizScreen);
+  loadQuestion();
+}
+
+function loadQuestion() {
+  hasAnswered = false;
+  nextBtn.disabled = true;
+  const q = QUESTIONS[currentIndex];
+  questionEl.textContent = q.question;
+  counterEl.textContent = `Question ${currentIndex + 1} of ${QUESTIONS.length}`;
+  progressFill.style.width = `${(currentIndex / QUESTIONS.length) * 100}%`;
+  answersEl.innerHTML = "";
+  q.answers.forEach((text, i) => {
+    const btn = document.createElement("button");
+    btn.className = "answer-btn";
+    btn.textContent = `${String.fromCharCode(65 + i)}.  ${text}`;
+    btn.addEventListener("click", () => selectAnswer(i));
+    answersEl.appendChild(btn);
+  });
+}
+
+function selectAnswer(chosen) {
+  if (hasAnswered) return;
+  hasAnswered = true;
+  const q = QUESTIONS[currentIndex];
+  userAnswers.push(chosen);
+  answersEl.querySelectorAll(".answer-btn").forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add("is-correct");
+    else if (i === chosen) btn.classList.add("is-wrong");
+  });
+  if (chosen === q.correct) score++;
+  nextBtn.disabled = false;
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex < QUESTIONS.length) loadQuestion();
+  else showResults();
+}
+
+function showResults() {
+  progressFill.style.width = "100%";
+  const pct = Math.round((score / QUESTIONS.length) * 100);
+  const map = [[100,"🏆","Perfect score! Absolutely outstanding."],[80,"🌟","Great work — you really know your stuff!"],[60,"👍","Solid effort. A respectable performance."],[40,"📚","Not bad, but there is more to learn."],[0,"💡","Keep at it — every attempt builds knowledge."]];
+  const [,icon,message] = map.find(([t]) => pct >= t);
+  finalScoreEl.textContent = score;
+  percentEl.textContent = `${pct}%`;
+  resultIconEl.textContent = icon;
+  messageEl.textContent = message;
+  showScreen(resultsScreen);
+}
+
+function showReview() {
+  reviewListEl.innerHTML = "";
+  QUESTIONS.forEach((q, i) => {
+    const chosen = userAnswers[i], ok = chosen === q.correct;
+    const item = document.createElement("div"); item.className = "review-item";
+    const qDiv = document.createElement("div"); qDiv.className = "review-q"; qDiv.textContent = `${i + 1}. ${q.question}`;
+    const aDiv = document.createElement("div"); aDiv.className = "review-a";
+    const tag = document.createElement("span"); tag.className = `review-tag ${ok ? "ok" : "err"}`; tag.textContent = ok ? "\u2714" : "\u2718";
+    const det = document.createElement("div");
+    det.innerHTML = ok ? `<span class="correct-text">\u2714 ${q.answers[q.correct]}</span>` : `Your answer: ${q.answers[chosen]}&emsp;<span class="correct-text">Correct: ${q.answers[q.correct]}</span>`;
+    aDiv.appendChild(tag); aDiv.appendChild(det);
+    item.appendChild(qDiv); item.appendChild(aDiv);
+    reviewListEl.appendChild(item);
+  });
+  showScreen(reviewScreen);
+}
+
+startBtn.addEventListener("click", startQuiz);
+nextBtn.addEventListener("click", nextQuestion);
+restartBtn.addEventListener("click", startQuiz);
+reviewBtn.addEventListener("click", showReview);
+backBtn.addEventListener("click", () => showScreen(resultsScreen));
