@@ -128,3 +128,15 @@ nextBtn.addEventListener("click", nextQuestion);
 restartBtn.addEventListener("click", startQuiz);
 reviewBtn.addEventListener("click", showReview);
 backBtn.addEventListener("click", () => showScreen(resultsScreen));
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours(), m = String(now.getMinutes()).padStart(2, "0");
+  const label = `${(h % 12) || 12}:${m} ${h >= 12 ? "PM" : "AM"}`;
+  if (document.getElementById("taskbar-clock")) document.getElementById("taskbar-clock").textContent = label;
+}
+(function scheduleClock() {
+  updateClock();
+  const now = new Date();
+  setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
+})();

@@ -20,3 +20,13 @@ body { font-family: var(--font); font-size: 12px; background: var(--teal); overf
 .app-title { font-size: 22px; font-weight: bold; margin-bottom: 20px; }
 .btn { background: var(--gray); border-top: 2px solid var(--white); border-left: 2px solid var(--white); border-right: 2px solid var(--gray-darker); border-bottom: 2px solid var(--gray-darker); padding: 5px 18px; font-family: var(--font); font-size: 12px; cursor: pointer; color: var(--black); min-width: 90px; text-align: center; }
 .btn-primary { outline: 2px dotted var(--black); outline-offset: -5px; }
+
+.taskbar { position: fixed; bottom: 0; left: 0; right: 0; height: 32px; background: var(--gray); border-top: 2px solid var(--white); display: flex; align-items: center; padding: 2px; gap: 2px; z-index: 100; }
+.taskbar-start { background: var(--gray); border-top: 2px solid var(--white); border-left: 2px solid var(--white); border-right: 2px solid var(--gray-darker); border-bottom: 2px solid var(--gray-darker); padding: 2px 8px; font-family: var(--font); font-size: 12px; cursor: pointer; height: 26px; display: flex; align-items: center; gap: 6px; color: var(--black); }
+.taskbar-start:active, .taskbar-start.is-active { border-top: 2px solid var(--gray-darker); border-left: 2px solid var(--gray-darker); border-right: 2px solid var(--white); border-bottom: 2px solid var(--white); }
+.start-logo { font-size: 14px; }
+.taskbar-sep { width: 0; height: 22px; border-left: 1px solid var(--gray-dark); border-right: 1px solid var(--white); margin: 0 2px; }
+.taskbar-tasks { flex: 1; display: flex; align-items: center; gap: 2px; overflow: hidden; }
+.taskbar-task { height: 26px; padding: 0 10px; font-size: 11px; display: flex; align-items: center; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 2px solid var(--white); border-left: 2px solid var(--white); border-right: 2px solid var(--gray-darker); border-bottom: 2px solid var(--gray-darker); cursor: default; }
+.taskbar-task.is-active { border-top: 2px solid var(--gray-darker); border-left: 2px solid var(--gray-darker); border-right: 2px solid var(--white); border-bottom: 2px solid var(--white); background: repeating-linear-gradient(45deg, var(--gray) 0px, var(--gray) 1px, #d0d0d0 1px, #d0d0d0 2px); }
+.taskbar-tray { border-top: 2px solid var(--gray-darker); border-left: 2px solid var(--gray-darker); border-right: 2px solid var(--white); border-bottom: 2px solid var(--white); height: 26px; padding: 0 10px; font-size: 11px; display: flex; align-items: center; white-space: nowrap; }
