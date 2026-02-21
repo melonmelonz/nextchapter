@@ -141,3 +141,30 @@ function updateClock() {
   const now = new Date();
   setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
 })();
+
+// ---------- Window Dragging ----------
+(function initDragging() {
+  const win = document.getElementById("quiz-window");
+  const titleBar = document.getElementById("title-bar");
+  let startX, startY, originLeft, originTop;
+  function onDragMove(e) {
+    win.style.left = `${originLeft + (e.clientX - startX)}px`;
+    win.style.top  = `${originTop  + (e.clientY - startY)}px`;
+  }
+  function onDragEnd() {
+    document.removeEventListener("mousemove", onDragMove);
+    document.removeEventListener("mouseup",   onDragEnd);
+  }
+  titleBar.addEventListener("mousedown", e => {
+    if (e.target.classList.contains("title-btn")) return;
+    const rect = win.getBoundingClientRect();
+    startX = e.clientX; startY = e.clientY;
+    originLeft = rect.left; originTop = rect.top;
+    win.style.transform = "none";
+    win.style.left = `${originLeft}px`;
+    win.style.top  = `${originTop}px`;
+    document.addEventListener("mousemove", onDragMove);
+    document.addEventListener("mouseup",   onDragEnd);
+    e.preventDefault();
+  });
+})();
