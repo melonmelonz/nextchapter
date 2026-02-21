@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz.exe</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -73,8 +74,55 @@
           </div>
         </div>
       </div>
+      <div class="status-bar">
+        <div class="status-panel" id="status-text">Ready</div>
+        <div class="status-panel">Quiz.exe</div>
+        <div class="status-panel status-clock" id="win-clock">12:00 PM</div>
+      </div>
     </div>
-  </div>
+
+    <div class="start-menu" id="start-menu" aria-hidden="true">
+      <div class="start-sidebar"><span class="start-sidebar-text">Windows&nbsp;95</span></div>
+      <div class="start-menu-items">
+        <div class="menu-entry has-sub">
+          <span class="entry-icon">📁</span><span class="entry-label">Programs</span><span class="entry-arrow">▶</span>
+          <div class="submenu">
+            <div class="menu-entry"><span class="entry-icon">📝</span><span class="entry-label">Notepad</span></div>
+            <div class="menu-entry"><span class="entry-icon">🎨</span><span class="entry-label">Paint</span></div>
+            <div class="menu-entry"><span class="entry-icon">🌐</span><span class="entry-label">Internet Explorer</span></div>
+            <div class="menu-entry"><span class="entry-icon">💣</span><span class="entry-label">Minesweeper</span></div>
+            <div class="menu-entry"><span class="entry-icon">🧮</span><span class="entry-label">Calculator</span></div>
+          </div>
+        </div>
+        <div class="menu-entry has-sub">
+          <span class="entry-icon">📄</span><span class="entry-label">Documents</span><span class="entry-arrow">▶</span>
+          <div class="submenu">
+            <div class="menu-entry"><span class="entry-icon">📄</span><span class="entry-label">readme.txt</span></div>
+            <div class="menu-entry"><span class="entry-icon">📊</span><span class="entry-label">budget.xls</span></div>
+            <div class="menu-entry"><span class="entry-icon">🖼️</span><span class="entry-label">vacation.bmp</span></div>
+          </div>
+        </div>
+        <div class="menu-entry has-sub">
+          <span class="entry-icon">⚙️</span><span class="entry-label">Settings</span><span class="entry-arrow">▶</span>
+          <div class="submenu">
+            <div class="menu-entry"><span class="entry-icon">🖥️</span><span class="entry-label">Control Panel</span></div>
+            <div class="menu-entry"><span class="entry-icon">🖨️</span><span class="entry-label">Printers</span></div>
+            <div class="menu-entry"><span class="entry-icon">📡</span><span class="entry-label">Dial-Up Networking</span></div>
+          </div>
+        </div>
+        <div class="menu-entry has-sub">
+          <span class="entry-icon">🔍</span><span class="entry-label">Find</span><span class="entry-arrow">▶</span>
+          <div class="submenu">
+            <div class="menu-entry"><span class="entry-icon">📂</span><span class="entry-label">Files or Folders…</span></div>
+            <div class="menu-entry"><span class="entry-icon">💻</span><span class="entry-label">Computer…</span></div>
+          </div>
+        </div>
+        <div class="menu-entry"><span class="entry-icon">❓</span><span class="entry-label">Help</span></div>
+        <div class="menu-entry"><span class="entry-icon">🏃</span><span class="entry-label">Run…</span></div>
+        <div class="menu-separator"></div>
+        <div class="menu-entry entry-shutdown"><span class="entry-icon">🔌</span><span class="entry-label">Shut Down…</span></div>
+      </div>
+    </div>
 
     <div class="taskbar">
       <button class="taskbar-start" id="taskbar-start">
@@ -85,6 +133,7 @@
       <div class="taskbar-tray"><span id="taskbar-clock">12:00 PM</span></div>
     </div>
 
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
