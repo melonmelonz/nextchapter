@@ -133,7 +133,8 @@ function updateClock() {
   const now = new Date();
   const h = now.getHours(), m = String(now.getMinutes()).padStart(2, "0");
   const label = `${(h % 12) || 12}:${m} ${h >= 12 ? "PM" : "AM"}`;
-  if (document.getElementById("taskbar-clock")) document.getElementById("taskbar-clock").textContent = label;
+  const tc = document.getElementById("taskbar-clock"); if (tc) tc.textContent = label;
+  const wc = document.getElementById("win-clock"); if (wc) wc.textContent = label;
 }
 (function scheduleClock() {
   updateClock();

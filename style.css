@@ -30,3 +30,10 @@ body { font-family: var(--font); font-size: 12px; background: var(--teal); overf
 .taskbar-task { height: 26px; padding: 0 10px; font-size: 11px; display: flex; align-items: center; max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-top: 2px solid var(--white); border-left: 2px solid var(--white); border-right: 2px solid var(--gray-darker); border-bottom: 2px solid var(--gray-darker); cursor: default; }
 .taskbar-task.is-active { border-top: 2px solid var(--gray-darker); border-left: 2px solid var(--gray-darker); border-right: 2px solid var(--white); border-bottom: 2px solid var(--white); background: repeating-linear-gradient(45deg, var(--gray) 0px, var(--gray) 1px, #d0d0d0 1px, #d0d0d0 2px); }
 .taskbar-tray { border-top: 2px solid var(--gray-darker); border-left: 2px solid var(--gray-darker); border-right: 2px solid var(--white); border-bottom: 2px solid var(--white); height: 26px; padding: 0 10px; font-size: 11px; display: flex; align-items: center; white-space: nowrap; }
+
+.menu-bar { display: flex; padding: 2px 4px 1px; border-bottom: 1px solid var(--gray-dark); flex-shrink: 0; background: var(--gray); }
+.menu-item { padding: 2px 10px; cursor: default; font-size: 12px; }
+.menu-item:hover { background: var(--navy); color: var(--white); }
+.status-bar { display: flex; border-top: 1px solid var(--gray-dark); padding: 2px; gap: 2px; flex-shrink: 0; background: var(--gray); }
+.status-panel { border-top: 1px solid var(--gray-darker); border-left: 1px solid var(--gray-darker); border-right: 1px solid var(--white); border-bottom: 1px solid var(--white); padding: 2px 8px; font-size: 11px; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status-clock { flex: 0 0 auto; }
