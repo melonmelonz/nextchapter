@@ -168,3 +168,30 @@ function updateClock() {
     e.preventDefault();
   });
 })();
+
+// ---------- Window Chrome Buttons ----------
+(function initWindowButtons() {
+  const win       = document.getElementById("quiz-window");
+  const body      = win.querySelector(".window-body");
+  const menuBar   = win.querySelector(".menu-bar");
+  const statusBar = win.querySelector(".status-bar");
+  win.querySelector(".minimize-btn").addEventListener("click", () => {
+    const collapsed = body.style.display === "none";
+    body.style.display      = collapsed ? "" : "none";
+    menuBar.style.display   = collapsed ? "" : "none";
+    statusBar.style.display = collapsed ? "" : "none";
+  });
+  win.querySelector(".maximize-btn").addEventListener("click", () => {
+    if (win.dataset.maximized === "true") {
+      win.style.cssText = ""; win.dataset.maximized = "false";
+    } else {
+      win.style.transform = "none"; win.style.top = "0"; win.style.left = "0";
+      win.style.width = "100vw"; win.style.maxWidth = "100vw";
+      win.style.height = "calc(100dvh - 32px)"; win.style.maxHeight = "calc(100dvh - 32px)";
+      win.dataset.maximized = "true";
+    }
+  });
+  win.querySelector(".close-btn").addEventListener("click", () => {
+    if (window.confirm("Exit Quiz.exe?")) win.style.display = "none";
+  });
+})();
