@@ -1,3 +1,4 @@
+/* Quiz.exe — script.js */
 "use strict";
 
 const QUESTIONS = [
@@ -23,8 +24,10 @@ const QUESTIONS = [
     answers: ["12", "16", "20", "24"], correct: 2 }
 ];
 
+// State
 let currentIndex = 0, score = 0, userAnswers = [], hasAnswered = false;
 
+// DOM
 const startScreen   = document.getElementById("start-screen");
 const quizScreen    = document.getElementById("quiz-screen");
 const resultsScreen = document.getElementById("results-screen");
@@ -39,39 +42,61 @@ const counterEl    = document.getElementById("question-counter");
 const progressFill = document.getElementById("progress-fill");
 const answersEl    = document.getElementById("answers-container");
 const scoreTracker = document.getElementById("score-tracker");
+const statusEl     = document.getElementById("status-text");
 const finalScoreEl = document.getElementById("final-score");
 const percentEl    = document.getElementById("score-percent");
 const messageEl    = document.getElementById("score-message");
 const resultIconEl = document.getElementById("result-icon");
 const reviewListEl = document.getElementById("review-list");
+const winClockEl   = document.getElementById("win-clock");
+const taskbarClock = document.getElementById("taskbar-clock");
 
 function showScreen(s) {
   [startScreen, quizScreen, resultsScreen, reviewScreen].forEach(x => x.classList.remove("active"));
   s.classList.add("active");
 }
 
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours(), m = String(now.getMinutes()).padStart(2, "0");
+  const label = `${(h % 12) || 12}:${m} ${h >= 12 ? "PM" : "AM"}`;
+  if (winClockEl)   winClockEl.textContent   = label;
+  if (taskbarClock) taskbarClock.textContent = label;
+}
+(function scheduleClock() {
+  updateClock();
+  const now = new Date();
+  const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+  setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, msToNextMinute);
+})();
+
+function setStatus(msg) { if (statusEl) statusEl.textContent = msg; }
+
 function startQuiz() {
   currentIndex = 0; score = 0; userAnswers = []; hasAnswered = false;
   scoreTracker.textContent = "Score: 0";
   showScreen(quizScreen);
   loadQuestion();
+  setStatus("Quiz in progress\u2026");
 }
 
 function loadQuestion() {
   hasAnswered = false;
   nextBtn.disabled = true;
   const q = QUESTIONS[currentIndex];
-  questionEl.textContent = q.question;
-  counterEl.textContent = `Question ${currentIndex + 1} of ${QUESTIONS.length}`;
+  questionEl.textContent   = q.question;
+  counterEl.textContent    = `Question ${currentIndex + 1} of ${QUESTIONS.length}`;
   progressFill.style.width = `${(currentIndex / QUESTIONS.length) * 100}%`;
   answersEl.innerHTML = "";
+  const frag = document.createDocumentFragment();
   q.answers.forEach((text, i) => {
     const btn = document.createElement("button");
-    btn.className = "answer-btn";
+    btn.className   = "answer-btn";
     btn.textContent = `${String.fromCharCode(65 + i)}.  ${text}`;
     btn.addEventListener("click", () => selectAnswer(i));
-    answersEl.appendChild(btn);
+    frag.appendChild(btn);
   });
+  answersEl.appendChild(frag);
 }
 
 function selectAnswer(chosen) {
@@ -84,13 +109,14 @@ function selectAnswer(chosen) {
     if (i === q.correct) btn.classList.add("is-correct");
     else if (i === chosen) btn.classList.add("is-wrong");
   });
-  if (chosen === q.correct) score++;
+  if (chosen === q.correct) { score++; scoreTracker.textContent = `Score: ${score}`; setStatus("\u2714  Correct!"); }
+  else { setStatus("\u2718  Incorrect."); }
   nextBtn.disabled = false;
 }
 
 function nextQuestion() {
   currentIndex++;
-  if (currentIndex < QUESTIONS.length) loadQuestion();
+  if (currentIndex < QUESTIONS.length) { loadQuestion(); setStatus("Quiz in progress\u2026"); }
   else showResults();
 }
 
@@ -100,61 +126,55 @@ function showResults() {
   const map = [[100,"🏆","Perfect score! Absolutely outstanding."],[80,"🌟","Great work — you really know your stuff!"],[60,"👍","Solid effort. A respectable performance."],[40,"📚","Not bad, but there is more to learn."],[0,"💡","Keep at it — every attempt builds knowledge."]];
   const [,icon,message] = map.find(([t]) => pct >= t);
   finalScoreEl.textContent = score;
-  percentEl.textContent = `${pct}%`;
+  percentEl.textContent    = `${pct}%`;
   resultIconEl.textContent = icon;
-  messageEl.textContent = message;
+  messageEl.textContent    = message;
   showScreen(resultsScreen);
+  setStatus(`Quiz complete \u2014 ${score}/${QUESTIONS.length} correct (${pct}%)`);
 }
 
 function showReview() {
-  reviewListEl.innerHTML = "";
+  const frag = document.createDocumentFragment();
   QUESTIONS.forEach((q, i) => {
     const chosen = userAnswers[i], ok = chosen === q.correct;
     const item = document.createElement("div"); item.className = "review-item";
     const qDiv = document.createElement("div"); qDiv.className = "review-q"; qDiv.textContent = `${i + 1}. ${q.question}`;
     const aDiv = document.createElement("div"); aDiv.className = "review-a";
-    const tag = document.createElement("span"); tag.className = `review-tag ${ok ? "ok" : "err"}`; tag.textContent = ok ? "\u2714" : "\u2718";
-    const det = document.createElement("div");
+    const tag  = document.createElement("span"); tag.className = `review-tag ${ok ? "ok" : "err"}`; tag.textContent = ok ? "\u2714" : "\u2718";
+    const det  = document.createElement("div");
     det.innerHTML = ok ? `<span class="correct-text">\u2714 ${q.answers[q.correct]}</span>` : `Your answer: ${q.answers[chosen]}&emsp;<span class="correct-text">Correct: ${q.answers[q.correct]}</span>`;
     aDiv.appendChild(tag); aDiv.appendChild(det);
     item.appendChild(qDiv); item.appendChild(aDiv);
-    reviewListEl.appendChild(item);
+    frag.appendChild(item);
   });
+  reviewListEl.innerHTML = "";
+  reviewListEl.appendChild(frag);
   showScreen(reviewScreen);
+  setStatus("Reviewing answers\u2026");
 }
 
-startBtn.addEventListener("click", startQuiz);
-nextBtn.addEventListener("click", nextQuestion);
+startBtn.addEventListener("click",   startQuiz);
+nextBtn.addEventListener("click",    nextQuestion);
 restartBtn.addEventListener("click", startQuiz);
-reviewBtn.addEventListener("click", showReview);
-backBtn.addEventListener("click", () => showScreen(resultsScreen));
-
-function updateClock() {
-  const now = new Date();
-  const h = now.getHours(), m = String(now.getMinutes()).padStart(2, "0");
-  const label = `${(h % 12) || 12}:${m} ${h >= 12 ? "PM" : "AM"}`;
-  const tc = document.getElementById("taskbar-clock"); if (tc) tc.textContent = label;
-  const wc = document.getElementById("win-clock"); if (wc) wc.textContent = label;
-}
-(function scheduleClock() {
-  updateClock();
-  const now = new Date();
-  setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, (60 - now.getSeconds()) * 1000 - now.getMilliseconds());
-})();
+reviewBtn.addEventListener("click",  showReview);
+backBtn.addEventListener("click", () => { showScreen(resultsScreen); setStatus(`Quiz complete \u2014 ${score}/${QUESTIONS.length} correct`); });
 
 // ---------- Window Dragging ----------
 (function initDragging() {
   const win = document.getElementById("quiz-window");
   const titleBar = document.getElementById("title-bar");
   let startX, startY, originLeft, originTop;
+
   function onDragMove(e) {
     win.style.left = `${originLeft + (e.clientX - startX)}px`;
     win.style.top  = `${originTop  + (e.clientY - startY)}px`;
   }
+
   function onDragEnd() {
     document.removeEventListener("mousemove", onDragMove);
     document.removeEventListener("mouseup",   onDragEnd);
   }
+
   titleBar.addEventListener("mousedown", e => {
     if (e.target.classList.contains("title-btn")) return;
     const rect = win.getBoundingClientRect();
@@ -175,12 +195,14 @@ function updateClock() {
   const body      = win.querySelector(".window-body");
   const menuBar   = win.querySelector(".menu-bar");
   const statusBar = win.querySelector(".status-bar");
+
   win.querySelector(".minimize-btn").addEventListener("click", () => {
     const collapsed = body.style.display === "none";
     body.style.display      = collapsed ? "" : "none";
     menuBar.style.display   = collapsed ? "" : "none";
     statusBar.style.display = collapsed ? "" : "none";
   });
+
   win.querySelector(".maximize-btn").addEventListener("click", () => {
     if (win.dataset.maximized === "true") {
       win.style.cssText = ""; win.dataset.maximized = "false";
@@ -191,6 +213,7 @@ function updateClock() {
       win.dataset.maximized = "true";
     }
   });
+
   win.querySelector(".close-btn").addEventListener("click", () => {
     if (window.confirm("Exit Quiz.exe?")) win.style.display = "none";
   });
