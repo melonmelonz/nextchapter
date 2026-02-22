@@ -461,7 +461,7 @@ body {
   flex-shrink: 0;
 }
 
-.review-title { font-weight: bold; font-size: 13px; } /* review */
+.review-title { font-weight: bold; font-size: 13px; }
 
 .review-list { flex: 1; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
 
