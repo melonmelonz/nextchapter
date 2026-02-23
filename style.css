@@ -567,6 +567,7 @@ body {
 .submenu .menu-entry:hover { background: var(--navy); color: var(--white); }
 
 /* ---------- Final polish ---------- */
+/* v1.0 */
 @media (max-height: 520px) {
   .screen-content { padding: 14px; }
   .splash-icon { font-size: 36px; }
