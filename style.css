@@ -386,7 +386,7 @@ body {
 
 .question-text { font-size: 13px; line-height: 1.6; }
 
-.answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.answers-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } /* 2-col */
 
 .answer-btn {
   background: var(--gray);
