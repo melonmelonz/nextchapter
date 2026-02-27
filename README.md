@@ -9,7 +9,7 @@ Made for the Next Chapter application.
 I can explain every line and could have gotten this done 10x as fast had I fully leveraged my AI setup but I know you want to see us showcase what we can do ourselves (pretty hard to avoid AI altogether but it is important to know the fundamentals).
 My opinion is LLMs make fine assistants, they can write your copy, test behind you, and their configs are spot-on! But they can by sycophantic, stochstic parrots at times as well. A tool, like any other, but and incredibly powerful tool for sure.
 
-I was already tuning my KDE theme to look similar (it worked too!) so I had the palette ready to go. I am a few hours deep at this point, the instructions said if we have experience it was OK to show a bit of what we know.
+I was tuning my KDE theme with a similar vibe so I had the palette ready to go. The instructions said if we have experience it was OK to show a bit of what we know.
 
 It could be improved on in many ways, adding more in-depth functionality to all the buttons, for example.
 
