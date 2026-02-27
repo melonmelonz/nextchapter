@@ -9,7 +9,7 @@
 
 > A retro general knowledge quiz styled as a Windows 95 desktop application.
 
-**[▶ melonmelonz.github.io/melonsnextchapter](https://melonmelonz.github.io/melonsnextchapter)**
+**[▶ melonmelonz.github.io/nextchapter](https://melonmelonz.github.io/nextchapter)**
 
 </div>
 
