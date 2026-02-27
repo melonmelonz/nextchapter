@@ -4,7 +4,7 @@
 
 Made for the Next Chapter application.
 
-**Tools used:** codium, nvim w/ avante and some claude code testing. I am partial to anthropic and mistral when utilizing models. I typically use Prettier on-save and have a host of other nvim plugins via lazyvim.
+**Tools used:** codium, nvim w/ avante and some claude code testing. I am partial to anthropic and mistral when utilizing LLMs. I typically use Prettier on-save and have a host of other nvim plugins via lazyvim.
 
 I can explain every line and could have gotten this done 10x as fast had I fully leveraged my AI setup but I know you want to see us showcase what we can do ourselves (pretty hard to avoid AI altogether but it is important to know the fundamentals).
 My opinion is LLMs make fine assistants, they can write your copy, test behind you, and their configs are spot-on! But they can by sycophantic, stochstic parrots at times as well. A tool, like any other, but and incredibly powerful tool for sure.
