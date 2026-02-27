@@ -1,9 +1,10 @@
 <div align="center">
-
+```
 ╔══════════════════════════════════════╗
 ║           📝  Quiz.exe               ║
 ║         Windows 95 Edition           ║
 ╚══════════════════════════════════════╝
+```
 
 > A retro general knowledge quiz styled as a Windows 95 desktop application.
 
