@@ -1,6 +1,19 @@
-# Quiz.exe
+<div align="center">
+
+```
+╔══════════════════════════════════════╗
+║           📝  Quiz.exe               ║
+║         Windows 95 Edition           ║
+╚══════════════════════════════════════╝
+```
 
 > A retro general knowledge quiz styled as a Windows 95 desktop application.
+
+**[▶ melonmelonz.github.io/melonsnextchapter](https://melonmelonz.github.io/melonsnextchapter)**
+
+</div>
+
+---
 
 Made for the Next Chapter application.
 
@@ -18,20 +31,20 @@ As of writing my friends' highest score has been 6/10; you all no doubt can do b
 
 I appreciate the opportunity!
 
-**[melonmelonz.github.io](https://melonmelonz.github.io)**
-
 ---
 
 ## Features
 
-- 10 multiple-choice general knowledge questions
-- real-time score tracking and progress bar
-- full answer review after completion
-- draggable application window
-- functional minimize / maximize / close title bar buttons
-- live clock in status bar and taskbar
-- start menu with cascading submenus
-- responsive — works on desktop and mobile
+| | |
+|:---:|:---|
+| 🧠 | 10 multiple-choice general knowledge questions |
+| 📊 | real-time score tracking and progress bar |
+| 📋 | full answer review after completion |
+| 🖱️ | draggable application window |
+| 🗕&nbsp;🗖&nbsp;✕ | functional minimize / maximize / close title bar buttons |
+| 🕐 | live clock in status bar and taskbar |
+| 📁 | start menu with cascading submenus |
+| 📱 | responsive — works on desktop and mobile |
 
 ## Stack
 
