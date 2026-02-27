@@ -218,3 +218,83 @@ backBtn.addEventListener("click", () => { showScreen(resultsScreen); setStatus(`
     if (window.confirm("Exit Quiz.exe?")) win.style.display = "none";
   });
 })();
+
+// ---------- My Documents Folder ----------
+(function initMyDocuments() {
+  const icon      = document.getElementById("mydocs-icon");
+  const win       = document.getElementById("mydocs-window");
+  const titleBar  = document.getElementById("mydocs-title-bar");
+  const bodyEl    = document.getElementById("mydocs-body");
+  const menuBarEl = win.querySelector(".menu-bar");
+  const statBarEl = win.querySelector(".status-bar");
+  if (!icon || !win) return;
+
+  function openFolder() { win.style.display = ""; }
+
+  icon.addEventListener("dblclick", openFolder);
+  icon.addEventListener("keydown",  e => { if (e.key === "Enter") openFolder(); });
+
+  // Dragging
+  let sX, sY, oL, oT;
+  function onMove(e) {
+    win.style.left = `${oL + (e.clientX - sX)}px`;
+    win.style.top  = `${oT + (e.clientY - sY)}px`;
+  }
+  function onUp() {
+    document.removeEventListener("mousemove", onMove);
+    document.removeEventListener("mouseup",   onUp);
+  }
+  titleBar.addEventListener("mousedown", e => {
+    if (e.target.classList.contains("title-btn")) return;
+    const r = win.getBoundingClientRect();
+    sX = e.clientX; sY = e.clientY; oL = r.left; oT = r.top;
+    win.style.left = `${oL}px`; win.style.top = `${oT}px`;
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup",   onUp);
+    e.preventDefault();
+  });
+
+  // Minimize (roll up / down)
+  document.getElementById("mydocs-min").addEventListener("click", () => {
+    const rolled = bodyEl.style.display === "none";
+    bodyEl.style.display    = rolled ? "" : "none";
+    menuBarEl.style.display = rolled ? "" : "none";
+    statBarEl.style.display = rolled ? "" : "none";
+  });
+
+  // Maximize / restore
+  document.getElementById("mydocs-max").addEventListener("click", () => {
+    if (win.dataset.maximized === "true") {
+      win.style.cssText = ""; // reverts to .folder-window CSS defaults
+      win.dataset.maximized = "false";
+    } else {
+      win.style.top = "0"; win.style.left = "0";
+      win.style.width = "100vw"; win.style.maxWidth = "100vw";
+      win.style.height = "calc(100dvh - 32px)"; win.style.maxHeight = "calc(100dvh - 32px)";
+      win.dataset.maximized = "true";
+    }
+  });
+
+  // Close
+  document.getElementById("mydocs-close").addEventListener("click", () => {
+    win.style.cssText = "display: none;";
+    win.dataset.maximized = "false";
+    bodyEl.style.display = "";
+    menuBarEl.style.display = "";
+    statBarEl.style.display = "";
+  });
+})();
+
+// ---------- Start Menu ----------
+(function initStartMenu() {
+  const menu     = document.getElementById("start-menu");
+  const startBtn = document.getElementById("taskbar-start");
+
+  function openMenu()   { menu.classList.add("is-open");    menu.setAttribute("aria-hidden", "false"); startBtn.classList.add("is-active"); }
+  function closeMenu()  { menu.classList.remove("is-open"); menu.setAttribute("aria-hidden", "true");  startBtn.classList.remove("is-active"); }
+  function toggleMenu() { menu.classList.contains("is-open") ? closeMenu() : openMenu(); }
+
+  startBtn.addEventListener("click", toggleMenu);
+  document.addEventListener("click", e => { if (!menu.contains(e.target) && !startBtn.contains(e.target)) closeMenu(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
+})();

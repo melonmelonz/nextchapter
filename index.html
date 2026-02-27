@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz.exe</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -85,6 +84,39 @@
         <div class="status-panel" id="status-text">Ready</div>
         <div class="status-panel">Quiz.exe</div>
         <div class="status-panel status-clock" id="win-clock">12:00 PM</div>
+      </div>
+    </div>
+
+    <div class="window folder-window" id="mydocs-window" style="display:none;">
+      <div class="title-bar" id="mydocs-title-bar">
+        <div class="title-bar-text">📁&nbsp; My Documents</div>
+        <div class="title-bar-controls">
+          <button class="title-btn" id="mydocs-min" aria-label="Minimize">_</button>
+          <button class="title-btn" id="mydocs-max" aria-label="Maximize">□</button>
+          <button class="title-btn" id="mydocs-close" aria-label="Close">✕</button>
+        </div>
+      </div>
+      <div class="menu-bar">
+        <span class="menu-item">File</span>
+        <span class="menu-item">View</span>
+        <span class="menu-item">Help</span>
+      </div>
+      <div class="folder-body" id="mydocs-body">
+        <a class="folder-link" href="https://pcporterfield-cv.pages.dev" target="_blank" rel="noopener">
+          <div class="folder-link-icon">📄</div>
+          <div class="folder-link-label">resume.html</div>
+        </a>
+        <a class="folder-link" href="https://pcporterfield.pages.dev" target="_blank" rel="noopener">
+          <div class="folder-link-icon">💻</div>
+          <div class="folder-link-label">pcporterfield</div>
+        </a>
+        <a class="folder-link" href="https://github.com/melonmelonz" target="_blank" rel="noopener">
+          <div class="folder-link-icon">🐱</div>
+          <div class="folder-link-label">github</div>
+        </a>
+      </div>
+      <div class="status-bar">
+        <div class="status-panel">3 object(s)</div>
       </div>
     </div>
 
