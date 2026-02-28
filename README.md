@@ -13,8 +13,6 @@
        General  Knowledge  Quiz
 </pre>
 
-> A retro general knowledge quiz styled as a Windows 95 desktop application.
-
 **[▶ melonmelonz.github.io/nextchapter](https://melonmelonz.github.io/nextchapter)**
 
 </div>
