@@ -37,6 +37,10 @@ I appreciate the opportunity!
 
 ---
 
+## Stack
+
+🍦 Static CSS, HTML & JS.
+
 ## Features
 
 | | |
@@ -49,10 +53,6 @@ I appreciate the opportunity!
 | 🕐 | live clock in status bar and taskbar |
 | 📁 | start menu with cascading submenus |
 | 📱 | responsive — works on desktop and mobile |
-
-## Stack
-
-🍦 Static CSS, HTML & JS.
 
 ## How to Play
 
