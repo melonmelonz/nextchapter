@@ -1,10 +1,13 @@
 <div align="center">
 
 ```
-╔══════════════════════════════════════╗
-║           📝  Quiz.exe               ║
-║         Windows 95 Edition           ║
-╚══════════════════════════════════════╝
+  ___  __  ____  ____     ____  _  _  ____
+ / _ \/ / / / / /_  /    / __/ | \/ |/ __/
+| (_) \ \_/ / /_ / /_   / _/   )    (\ \
+ \__\_\\___/____/____/ /___/  (_/\/\_)___/
+
+        W I N D O W S   9 5
+        General Knowledge Quiz
 ```
 
 > A retro general knowledge quiz styled as a Windows 95 desktop application.
