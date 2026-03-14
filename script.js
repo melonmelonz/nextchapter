@@ -56,6 +56,7 @@ function showScreen(s) {
   s.classList.add("active");
 }
 
+// Clock — fires on the minute boundary so it stays accurate
 function updateClock() {
   const now = new Date();
   const h = now.getHours(), m = String(now.getMinutes()).padStart(2, "0");
@@ -63,12 +64,11 @@ function updateClock() {
   if (winClockEl)   winClockEl.textContent   = label;
   if (taskbarClock) taskbarClock.textContent = label;
 }
-(function scheduleClock() {
+updateClock();
+setTimeout(() => {
   updateClock();
-  const now = new Date();
-  const msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
-  setTimeout(() => { updateClock(); setInterval(updateClock, 60000); }, msToNextMinute);
-})();
+  setInterval(updateClock, 60000);
+}, (60 - new Date().getSeconds()) * 1000 - new Date().getMilliseconds());
 
 function setStatus(msg) { if (statusEl) statusEl.textContent = msg; }
 
@@ -77,7 +77,7 @@ function startQuiz() {
   scoreTracker.textContent = "Score: 0";
   showScreen(quizScreen);
   loadQuestion();
-  setStatus("Quiz in progress\u2026");
+  setStatus("Quiz in progress…");
 }
 
 function loadQuestion() {
@@ -109,28 +109,39 @@ function selectAnswer(chosen) {
     if (i === q.correct) btn.classList.add("is-correct");
     else if (i === chosen) btn.classList.add("is-wrong");
   });
-  if (chosen === q.correct) { score++; scoreTracker.textContent = `Score: ${score}`; setStatus("\u2714  Correct!"); }
-  else { setStatus("\u2718  Incorrect."); }
+  if (chosen === q.correct) {
+    score++;
+    scoreTracker.textContent = `Score: ${score}`;
+    setStatus("✔  Correct!");
+  } else {
+    setStatus("✘  Incorrect.");
+  }
   nextBtn.disabled = false;
 }
 
 function nextQuestion() {
   currentIndex++;
-  if (currentIndex < QUESTIONS.length) { loadQuestion(); setStatus("Quiz in progress\u2026"); }
+  if (currentIndex < QUESTIONS.length) { loadQuestion(); setStatus("Quiz in progress…"); }
   else showResults();
 }
 
 function showResults() {
   progressFill.style.width = "100%";
   const pct = Math.round((score / QUESTIONS.length) * 100);
-  const map = [[100,"🏆","Perfect score! Absolutely outstanding."],[80,"🌟","Great work — you really know your stuff!"],[60,"👍","Solid effort. A respectable performance."],[40,"📚","Not bad, but there is more to learn."],[0,"💡","Keep at it — every attempt builds knowledge."]];
-  const [,icon,message] = map.find(([t]) => pct >= t);
+
+  let icon, message;
+  if (pct === 100)    { icon = "🏆"; message = "Perfect score! Absolutely outstanding."; }
+  else if (pct >= 80) { icon = "🌟"; message = "Great work — you really know your stuff!"; }
+  else if (pct >= 60) { icon = "👍"; message = "Solid effort. A respectable performance."; }
+  else if (pct >= 40) { icon = "📚"; message = "Not bad, but there is more to learn."; }
+  else                { icon = "💡"; message = "Keep at it — every attempt builds knowledge."; }
+
   finalScoreEl.textContent = score;
   percentEl.textContent    = `${pct}%`;
   resultIconEl.textContent = icon;
   messageEl.textContent    = message;
   showScreen(resultsScreen);
-  setStatus(`Quiz complete \u2014 ${score}/${QUESTIONS.length} correct (${pct}%)`);
+  setStatus(`Quiz complete — ${score}/${QUESTIONS.length} correct (${pct}%)`);
 }
 
 function showReview() {
@@ -140,9 +151,11 @@ function showReview() {
     const item = document.createElement("div"); item.className = "review-item";
     const qDiv = document.createElement("div"); qDiv.className = "review-q"; qDiv.textContent = `${i + 1}. ${q.question}`;
     const aDiv = document.createElement("div"); aDiv.className = "review-a";
-    const tag  = document.createElement("span"); tag.className = `review-tag ${ok ? "ok" : "err"}`; tag.textContent = ok ? "\u2714" : "\u2718";
+    const tag  = document.createElement("span"); tag.className = `review-tag ${ok ? "ok" : "err"}`; tag.textContent = ok ? "✔" : "✘";
     const det  = document.createElement("div");
-    det.innerHTML = ok ? `<span class="correct-text">\u2714 ${q.answers[q.correct]}</span>` : `Your answer: ${q.answers[chosen]}&emsp;<span class="correct-text">Correct: ${q.answers[q.correct]}</span>`;
+    det.innerHTML = ok
+      ? `<span class="correct-text">✔ ${q.answers[q.correct]}</span>`
+      : `Your answer: ${q.answers[chosen]}&emsp;<span class="correct-text">Correct: ${q.answers[q.correct]}</span>`;
     aDiv.appendChild(tag); aDiv.appendChild(det);
     item.appendChild(qDiv); item.appendChild(aDiv);
     frag.appendChild(item);
@@ -150,85 +163,96 @@ function showReview() {
   reviewListEl.innerHTML = "";
   reviewListEl.appendChild(frag);
   showScreen(reviewScreen);
-  setStatus("Reviewing answers\u2026");
+  setStatus("Reviewing answers…");
 }
 
 startBtn.addEventListener("click",   startQuiz);
 nextBtn.addEventListener("click",    nextQuestion);
 restartBtn.addEventListener("click", startQuiz);
 reviewBtn.addEventListener("click",  showReview);
-backBtn.addEventListener("click", () => { showScreen(resultsScreen); setStatus(`Quiz complete \u2014 ${score}/${QUESTIONS.length} correct`); });
+backBtn.addEventListener("click", () => {
+  showScreen(resultsScreen);
+  setStatus(`Quiz complete — ${score}/${QUESTIONS.length} correct`);
+});
 
-// ---------- Window Dragging ----------
-(function initDragging() {
-  const win = document.getElementById("quiz-window");
-  const titleBar = document.getElementById("title-bar");
-  let startX, startY, originLeft, originTop;
+// Window dragging
+const quizWin = document.getElementById("quiz-window");
+const titleBar = document.getElementById("title-bar");
+let drag = null;
 
-  function onDragMove(e) {
-    win.style.left = `${originLeft + (e.clientX - startX)}px`;
-    win.style.top  = `${originTop  + (e.clientY - startY)}px`;
+titleBar.addEventListener("mousedown", e => {
+  if (e.target.classList.contains("title-btn")) return;
+  const rect = quizWin.getBoundingClientRect();
+  drag = { x: e.clientX, y: e.clientY, left: rect.left, top: rect.top };
+  quizWin.style.transform = "none";
+  quizWin.style.left = rect.left + "px";
+  quizWin.style.top  = rect.top  + "px";
+  e.preventDefault();
+});
+
+document.addEventListener("mousemove", e => {
+  if (!drag) return;
+  quizWin.style.left = (drag.left + e.clientX - drag.x) + "px";
+  quizWin.style.top  = (drag.top  + e.clientY - drag.y) + "px";
+});
+
+document.addEventListener("mouseup", () => { drag = null; });
+
+// Window chrome buttons
+const winBody      = quizWin.querySelector(".window-body");
+const winMenuBar   = quizWin.querySelector(".menu-bar");
+const winStatusBar = quizWin.querySelector(".status-bar");
+
+quizWin.querySelector(".minimize-btn").addEventListener("click", () => {
+  const collapsed = winBody.style.display === "none";
+  winBody.style.display      = collapsed ? "" : "none";
+  winMenuBar.style.display   = collapsed ? "" : "none";
+  winStatusBar.style.display = collapsed ? "" : "none";
+});
+
+quizWin.querySelector(".maximize-btn").addEventListener("click", () => {
+  if (quizWin.dataset.maximized === "true") {
+    quizWin.style.cssText = "";
+    quizWin.dataset.maximized = "false";
+  } else {
+    quizWin.style.transform  = "none";
+    quizWin.style.top        = "0";
+    quizWin.style.left       = "0";
+    quizWin.style.width      = "100vw";
+    quizWin.style.maxWidth   = "100vw";
+    quizWin.style.height     = "calc(100dvh - 32px)";
+    quizWin.style.maxHeight  = "calc(100dvh - 32px)";
+    quizWin.dataset.maximized = "true";
   }
+});
 
-  function onDragEnd() {
-    document.removeEventListener("mousemove", onDragMove);
-    document.removeEventListener("mouseup",   onDragEnd);
+quizWin.querySelector(".close-btn").addEventListener("click", () => {
+  if (window.confirm("Exit Quiz.exe?")) quizWin.style.display = "none";
+});
+
+// Start menu
+const startMenu  = document.getElementById("start-menu");
+const taskbarBtn = document.getElementById("taskbar-start");
+
+taskbarBtn.addEventListener("click", () => {
+  const opening = !startMenu.classList.contains("is-open");
+  startMenu.classList.toggle("is-open", opening);
+  startMenu.setAttribute("aria-hidden", String(!opening));
+  taskbarBtn.classList.toggle("is-active", opening);
+});
+
+document.addEventListener("click", e => {
+  if (!startMenu.contains(e.target) && !taskbarBtn.contains(e.target)) {
+    startMenu.classList.remove("is-open");
+    startMenu.setAttribute("aria-hidden", "true");
+    taskbarBtn.classList.remove("is-active");
   }
+});
 
-  titleBar.addEventListener("mousedown", e => {
-    if (e.target.classList.contains("title-btn")) return;
-    const rect = win.getBoundingClientRect();
-    startX = e.clientX; startY = e.clientY;
-    originLeft = rect.left; originTop = rect.top;
-    win.style.transform = "none";
-    win.style.left = `${originLeft}px`;
-    win.style.top  = `${originTop}px`;
-    document.addEventListener("mousemove", onDragMove);
-    document.addEventListener("mouseup",   onDragEnd);
-    e.preventDefault();
-  });
-})();
-
-// ---------- Window Chrome Buttons ----------
-(function initWindowButtons() {
-  const win       = document.getElementById("quiz-window");
-  const body      = win.querySelector(".window-body");
-  const menuBar   = win.querySelector(".menu-bar");
-  const statusBar = win.querySelector(".status-bar");
-
-  win.querySelector(".minimize-btn").addEventListener("click", () => {
-    const collapsed = body.style.display === "none";
-    body.style.display      = collapsed ? "" : "none";
-    menuBar.style.display   = collapsed ? "" : "none";
-    statusBar.style.display = collapsed ? "" : "none";
-  });
-
-  win.querySelector(".maximize-btn").addEventListener("click", () => {
-    if (win.dataset.maximized === "true") {
-      win.style.cssText = ""; win.dataset.maximized = "false";
-    } else {
-      win.style.transform = "none"; win.style.top = "0"; win.style.left = "0";
-      win.style.width = "100vw"; win.style.maxWidth = "100vw";
-      win.style.height = "calc(100dvh - 32px)"; win.style.maxHeight = "calc(100dvh - 32px)";
-      win.dataset.maximized = "true";
-    }
-  });
-
-  win.querySelector(".close-btn").addEventListener("click", () => {
-    if (window.confirm("Exit Quiz.exe?")) win.style.display = "none";
-  });
-})();
-
-// ---------- Start Menu ----------
-(function initStartMenu() {
-  const menu     = document.getElementById("start-menu");
-  const startBtn = document.getElementById("taskbar-start");
-
-  function openMenu()   { menu.classList.add("is-open");    menu.setAttribute("aria-hidden", "false"); startBtn.classList.add("is-active"); }
-  function closeMenu()  { menu.classList.remove("is-open"); menu.setAttribute("aria-hidden", "true");  startBtn.classList.remove("is-active"); }
-  function toggleMenu() { menu.classList.contains("is-open") ? closeMenu() : openMenu(); }
-
-  startBtn.addEventListener("click", toggleMenu);
-  document.addEventListener("click", e => { if (!menu.contains(e.target) && !startBtn.contains(e.target)) closeMenu(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
-})();
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    startMenu.classList.remove("is-open");
+    startMenu.setAttribute("aria-hidden", "true");
+    taskbarBtn.classList.remove("is-active");
+  }
+});
